@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <!-- Кнопка "Готово" -->
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="Готово"
+
+        app:backgroundTint="@null"
+        android:background="@drawable/rounded_button"
+        android:textColor="@color/white"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Контейнер для NumberPicker -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <NumberPicker
+            android:id="@+id/numPickerDay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:theme="@style/NumberPickerStyle"/>
+
+        <NumberPicker
+            android:id="@+id/numPickerMonth"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:theme="@style/NumberPickerStyle"/>
+
+        <NumberPicker
+            android:id="@+id/numPickerYear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:theme="@style/NumberPickerStyle"/>
+    </LinearLayout>
+</LinearLayout>

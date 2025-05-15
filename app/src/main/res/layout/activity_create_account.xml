@@ -1,0 +1,187 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Заголовок с логотипом -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+
+            <!-- Текст заголовка -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Стать клиентом"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="16dp"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/fix_logo"
+                android:background="@drawable/gradient_circle"
+                android:scaleType="fitCenter"
+                android:padding="5dp"
+                app:tint="@color/white"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AUTO FIX"
+            android:textSize="18sp"
+            android:gravity="left"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Укажите ваши данные, чтобы использовать все функции приложения"
+            android:textColor="@color/secondary_color"
+            android:gravity="left"
+            android:layout_marginBottom="30dp" />
+
+        <!-- Фамилия -->
+        <EditText
+            android:id="@+id/etLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Введите вашу фамилию"
+            android:inputType="textPersonName"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Имя -->
+        <EditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Введите ваше имя"
+            android:inputType="textPersonName"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Отчество -->
+        <EditText
+            android:id="@+id/etMiddleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Введите ваше отчество(необязательно)"
+            android:inputType="textPersonName"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Пол -->
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="15dp"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Я — мужчина"
+                android:layout_marginRight="20dp"
+                app:buttonTint="@color/primary_color"/>
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Я — женщина"
+                app:buttonTint="@color/primary_color"/>
+        </RadioGroup>
+
+        <!-- Дата рождения -->
+        <EditText
+            android:id="@+id/etBirthDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Укажите дату вашего рождения"
+            android:inputType="none"
+            android:focusable="false"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Почта -->
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Введите вашу почту"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Введите пароль"
+            android:inputType="textPassword"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="15dp" />
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Подтвердите пароль"
+            android:inputType="textPassword"
+            android:background="@drawable/edittext_rounded"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_marginBottom="30dp" />
+
+
+        <!-- Кнопка "Продолжить" -->
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Продолжить"
+            app:backgroundTint="@null"
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/white"
+            android:layout_marginTop="32dp"/>
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="64dp"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"/>
+
+    </LinearLayout>
+</ScrollView>

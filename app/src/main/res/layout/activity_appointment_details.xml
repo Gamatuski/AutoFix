@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".AppointmentDetailsActivity"
+    android:background="@color/white">
+
+
+    <!-- Иконка Назад -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/back_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/back_ic"
+            android:layout_marginEnd="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Детали записи"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- Блок информации о станции -->
+    <TextView
+        android:id="@+id/tv_station_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Станция техобслуживания"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:textStyle="bold"/>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardElevation="8dp"
+        android:paddingHorizontal="4dp"
+        app:cardCornerRadius="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="6dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Автомобиль"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/secondary_color"/>
+
+        <TextView
+            android:id="@+id/tv_car_name"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:text="Выбранное авто"
+            android:textStyle="bold"
+            android:textSize="16dp"/>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Блок даты -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/icon_calendar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/calendar_ic"
+            android:padding="3dp"
+            android:contentDescription="Календарь"
+            app:tint="@color/secondary_color"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Дата:"
+            android:textStyle="bold"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_booking_date"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="01.01.2025"
+            />
+
+    </LinearLayout>
+
+    <!-- Блок времени -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/icon_clock"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/clock_ic"
+            android:padding="3dp"
+            android:contentDescription="Часы"
+            app:tint="@color/secondary_color"
+            android:layout_marginEnd="4dp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Время:"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="3dp"/>
+
+        <TextView
+            android:id="@+id/tv_booking_time"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="10:00"
+            android:layout_marginTop="3dp"/>
+
+    </LinearLayout>
+
+    <!-- Блок стоимости -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Итого:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_total_price"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_height="wrap_content"
+            android:text="1500 ₽"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Опалта на месте"
+        android:background="@drawable/textview_rounded"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+
+    <!-- RecyclerView для услуг -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/services_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Кнопка отмены записи -->
+    <Button
+        android:id="@+id/cancel_booking_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Отменить запись"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="@color/red"
+        android:background="@drawable/rounded_button"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

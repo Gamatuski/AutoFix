@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+    <!-- Кнопки Назад и Отмена над шапкой -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp"
+        android:id="@+id/buttons">
+
+
+        <!-- Кнопка Назад -->
+        <ImageView
+            android:id="@+id/back_button_top"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back_ic"
+            android:padding="6dp"
+            />
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_toEndOf="@+id/back_button_top"
+            android:text="Название категории"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <!-- Кнопка Отмена -->
+        <ImageView
+            android:id="@+id/cancel_button_top"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/close_ic"
+            android:padding="6dp"
+            />
+    </RelativeLayout>
+
+    <!-- Список услуг -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/services_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/summary_card"
+        android:layout_below="@id/buttons"
+        android:paddingHorizontal="8dp"
+        android:clipToPadding="false"/>
+
+    <!-- Нижняя часть (итоговая информация) в CardView -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/summary_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:cardElevation="26dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:id="@+id/summary_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Итого"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/total_price_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0 ₽"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Без учёта стоимости запчастей"
+                android:textSize="14sp"
+                android:textColor="#757575"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/proceed_to_booking_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="К записи на СТО"
+                android:textAllCaps="false"
+                android:background="@drawable/rounded_button"
+                app:backgroundTint="@null"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

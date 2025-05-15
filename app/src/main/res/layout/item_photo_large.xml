@@ -1,0 +1,16 @@
+<!-- item_photo_large.xml -->
+<androidx.cardview.widget.CardView
+    android:layout_width="200dp"
+    android:layout_height="100dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/photo_view"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"/>
+</androidx.cardview.widget.CardView>

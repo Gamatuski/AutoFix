@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Градиент оранжевых оттенков -->
+    <gradient
+        android:centerY="0.5"
+        android:startColor="#FFA500"
+        android:centerColor="#FF6347"
+        android:endColor="#FF4500"/>
+
+    <!-- Размеры круга -->
+    <size
+        android:width="300dp"
+        android:height="300dp"/>
+</shape>

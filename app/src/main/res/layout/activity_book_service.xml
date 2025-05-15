@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+
+    <!-- Кнопки Назад и Отмена над шапкой -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp">
+
+        <!-- Кнопка Назад -->
+        <ImageView
+            android:id="@+id/back_button_top"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back_ic"
+            android:padding="2dp"
+             />
+
+        <!-- Кнопка Отмена -->
+        <ImageView
+            android:id="@+id/cancel_button_top"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/close_ic"
+            android:padding="2dp"
+             />
+    </RelativeLayout>
+
+    <!-- Шапка с иконкой и шагом -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp">
+
+
+        <ImageView
+            android:id="@+id/title_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/garage_ic"
+            android:background="@drawable/gradient_circle"
+            android:padding="3dp"
+            app:tint="@color/white" />
+
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="9dp"
+            android:layout_toEndOf="@+id/title_icon"
+            android:text="Шаг 1/3"
+            android:textColor="@color/primary_color"
+            android:textSize="12sp"
+             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_marginStart="3dp"
+
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/title_icon"
+            android:text="Выбор автомобиля"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            />
+
+
+    </RelativeLayout>
+
+    <!-- Прогресс-бар с точками -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="16dp">
+        <!-- Фон прогресс-бара -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/gray_light"
+            android:layout_marginTop="2dp"/>
+        <!-- Оранжевая часть прогресса -->
+        <View
+            android:id="@+id/progress_fill"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="@color/primary_color"
+            android:layout_marginTop="2dp"/>
+        <!-- Точки прогресса -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Первая точка (1/3) -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <View
+                    android:id="@+id/first_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/progress_dot_active"
+                    />
+            </RelativeLayout>
+            <!-- Вторая точка (2/3) -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+                <View
+                    android:id="@+id/second_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/progress_dot_inactive"/>
+            </RelativeLayout>
+            <!-- Третья точка (3/3) -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+                <View
+                    android:id="@+id/third_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/progress_dot_inactive"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+    <!-- Основной контент -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
+
+        <!-- Поле выбора марки -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Марка автомобиля">
+
+            <AutoCompleteTextView
+                android:id="@+id/brand_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textSize="18sp"
+                android:completionThreshold="1"
+                android:background="@drawable/edittext_rounded"
+                android:layout_marginBottom="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Поле выбора модели -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Модель автомобиля">
+
+            <AutoCompleteTextView
+                android:id="@+id/model_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:enabled="false"
+                android:textSize="18sp"
+                android:completionThreshold="1"
+                android:background="@drawable/edittext_rounded"
+                android:layout_marginBottom="16dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Прокручиваемый список моделей -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/models_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+
+            android:background="@drawable/recycler_bg"/>
+
+        <!-- Кнопка продолжения -->
+        <Button
+            android:id="@+id/continue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Выбрать"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_button"
+            app:backgroundTint="@null"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary_color">#f57c33</color>
+    <color name="secondary_color">#808080</color>
+    <color name="editText_color">#e8ebf0</color>
+    <color name="text_color">#000000</color>
+    <color name="gray_light">#EEEEEE</color>
+    <color name="red">#e44849</color>
+    <color name="silver_color">#C0C0C0</color>
+    <color name="gold_color">#FFD700</color>
+    <color name="ruby_color">#E0115F</color>
+</resources>

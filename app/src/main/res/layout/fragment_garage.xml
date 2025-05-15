@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/garage_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="24dp"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:layout_alignParentTop="true" />
+
+    <!-- Кнопка записи (всегда видна внизу) -->
+    <Button
+        android:id="@+id/btn_book_service"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/book_service"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        android:background="@drawable/rounded_button"
+        android:textColor="@color/white" />
+
+    <!-- Список записей -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_appointments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_text"
+        android:layout_above="@id/btn_book_service"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
+        android:visibility="gone" />
+
+    <!-- Пустое состояние -->
+    <LinearLayout
+        android:id="@+id/empty_state_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_text"
+        android:layout_above="@id/btn_book_service"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp"
+        android:visibility="visible">
+
+        <!-- Иллюстрация -->
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_garage_empty"
+            android:layout_gravity="center"
+            android:contentDescription="@string/garage_empty_image"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Описание -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/garage_empty_description"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_color"
+            android:gravity="left"
+            android:layout_marginBottom="32dp"
+            android:lineSpacingExtra="4dp" />
+    </LinearLayout>
+
+    <!-- Состояние загрузки -->
+    <LinearLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_text"
+        android:layout_above="@id/btn_book_service"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/primary_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Загрузка..."
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</RelativeLayout>

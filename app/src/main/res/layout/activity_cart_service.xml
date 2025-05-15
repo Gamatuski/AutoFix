@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+
+
+    <!-- Кнопки Назад и Отмена над шапкой -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp"
+        android:id="@+id/buttons">
+
+
+        <!-- Кнопка Назад -->
+        <ImageView
+            android:id="@+id/back_button_top"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back_ic"
+            android:padding="2dp"
+            />
+
+        <!-- Кнопка Отмена -->
+        <ImageView
+            android:id="@+id/cancel_button_top"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/close_ic"
+            android:padding="2dp"
+            />
+    </RelativeLayout>
+
+
+    <!-- Шапка (как в вашем примере) -->
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/buttons"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/service_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/service_ic"
+            android:background="@drawable/gradient_circle"
+            android:padding="6dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/service_button"
+            android:text="Шаг 2/3"
+            android:textColor="@color/primary_color"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/service_button"
+            android:text="Запись на СТО"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/Clear_cart_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_alignParentEnd="true"
+            android:text="Очистить"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <!-- Прогресс-бар с точками -->
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="16dp">
+        <!-- Фон прогресс-бара -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/gray_light"
+            android:layout_marginTop="2dp"/>
+        <!-- Оранжевая часть прогресса -->
+        <View
+            android:id="@+id/progress_fill"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="@color/primary_color"
+            android:layout_marginTop="2dp"/>
+        <!-- Точки прогресса -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Первая точка (1/3) -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <View
+                    android:id="@+id/first_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/progress_dot_active"
+                    />
+            </RelativeLayout>
+            <!-- Вторая точка (2/3) -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+                <View
+                    android:id="@+id/second_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/progress_dot_active"/>
+            </RelativeLayout>
+            <!-- Третья точка (3/3) -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+                <View
+                    android:id="@+id/third_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/progress_dot_inactive"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Контейнер для пустой корзины -->
+    <LinearLayout
+        android:id="@+id/empty_cart_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/progress_bar"
+        android:layout_above="@id/add_service_button"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/empty_cart_image"
+            android:layout_width="350dp"
+            android:layout_height="200dp"
+            android:src="@drawable/empty_cart"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Пустая корзина" />
+
+        <TextView
+            android:id="@+id/empty_cart_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ваша корзина пуста"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/empty_cart_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Добавьте услуги для записи на СТО"
+            android:textSize="16sp"
+            android:textColor="@color/secondary_color"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- RecyclerView для карточек услуг -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/services_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress_bar"
+        android:layout_above="@id/summary_card"
+        android:paddingHorizontal="8dp"
+        android:clipToPadding="false"/>
+
+    <Button
+        android:id="@+id/add_service_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/summary_card"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:text="Добавить услугу"
+        style="@style/WhiteButton"/>
+
+    <!-- Нижняя панель с итогами -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/summary_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        app:cardElevation="26dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/car_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Выбранное авто"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/total_price_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0 ₽"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Без учёта стоимости запчастей"
+                android:textSize="14sp"
+                android:textColor="#757575"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/proceed_to_booking_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Записаться на СТО"
+                android:textAllCaps="false"
+                android:background="@drawable/rounded_button"
+                app:backgroundTint="@null"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
