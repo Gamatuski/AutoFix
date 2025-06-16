@@ -47,8 +47,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="4dp"
         android:paddingHorizontal="4dp"
+        app:cardUseCompatPadding="true"
         app:cardCornerRadius="8dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -148,7 +149,9 @@
     </LinearLayout>
 
     <!-- Блок стоимости -->
+    <!-- Блок стоимости -->
     <LinearLayout
+        android:id="@+id/total_price_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -171,6 +174,35 @@
             android:layout_height="wrap_content"
             android:text="1500 ₽"/>
     </LinearLayout>
+
+    <!-- Layout для быстрой записи -->
+    <LinearLayout
+        android:id="@+id/quick_booking_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginVertical="8dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <!-- Иконка молнии -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/power_ic"
+            android:layout_marginEnd="8dp"
+            app:tint="@color/primary_color" />
+
+        <!-- Текст "Быстрая запись" -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Быстрая запись"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color" />
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -187,6 +219,50 @@
         android:layout_weight="1"
         android:layout_marginTop="16dp"/>
 
+    <!-- Блок местоположения сервиса -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/map_ic"
+            android:contentDescription="Местоположение"
+            app:tint="@color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Местоположение сервиса"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"/>
+
+
+    </LinearLayout>
+
+    <!-- Карта -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:layout_marginBottom="8dp"
+        app:cardUseCompatPadding="true">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.cardview.widget.CardView>
+
     <!-- Кнопка отмены записи -->
     <Button
         android:id="@+id/cancel_booking_button"
@@ -195,7 +271,8 @@
         android:text="Отменить запись"
         android:textColor="#FFFFFF"
         app:backgroundTint="@color/red"
-        android:background="@drawable/rounded_button"
-        android:layout_marginTop="16dp"/>
+        style="@style/RedButton"
+        android:layout_marginTop="16dp"
+        />
 
 </LinearLayout>

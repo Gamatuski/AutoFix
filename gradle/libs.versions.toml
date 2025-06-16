@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.2"
+core = "3.5.2"
 glide = "4.15.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -18,8 +19,12 @@ roomCommonJvm = "2.7.1"
 roomRuntimeAndroid = "2.7.1"
 room = "2.7.1"
 swiperefreshlayout = "1.1.0"
+volley = "1.2.1"
+firebaseDatabase = "21.0.0"
+shimmer = "0.5.0"
 
 [libraries]
+core = { module = "com.google.zxing:core", version.ref = "core" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -39,7 +44,9 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCommo
 room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
-
+volley = { module = "com.android.volley:volley", version.ref = "volley" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "shimmer" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }

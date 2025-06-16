@@ -13,7 +13,7 @@ import com.example.autofix.data.entities.CartItem;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Cart.class, CartItem.class}, version = 3, exportSchema = false)
+@Database(entities = {Cart.class, CartItem.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "autofix_db";
     private static AppDatabase instance;

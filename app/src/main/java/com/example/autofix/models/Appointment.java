@@ -13,6 +13,7 @@ public class Appointment {
     private int totalPrice;
     private String status;
     private Date createdAt;
+    private boolean isQuickBooking;
 
     // Конструктор по умолчанию для Firebase
     public Appointment() {
@@ -98,4 +99,6 @@ public class Appointment {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+    public boolean isQuickBooking(){return isQuickBooking;}
+    public void  setQuickBooking(boolean isQuickBooking){this.isQuickBooking = isQuickBooking;}
 }

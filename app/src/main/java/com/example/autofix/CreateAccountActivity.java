@@ -79,7 +79,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-
                         // Создаем объект пользователя
                         Map<String, Object> user = new HashMap<>();
                         user.put("lastName", lastName);
@@ -108,9 +107,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                                             .document("card_info") // Документ с информацией о карте
                                             .set(bonusCard)
                                             .addOnSuccessListener(aVoid1 -> {
-                                                Toast.makeText(CreateAccountActivity.this, "Регистрация успешна!", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(CreateAccountActivity.this, MainActivity.class));
-                                                finish();
+                                                // Добавляем запись в историю о подарочных баллах
+                                                addWelcomeBonusToHistory(uid);
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(CreateAccountActivity.this, "Ошибка создания бонусной карты: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -127,6 +125,35 @@ public class CreateAccountActivity extends AppCompatActivity {
                         changeInProgress(false);
                         Toast.makeText(CreateAccountActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                });
+    }
+
+    private void addWelcomeBonusToHistory(String uid) {
+        Map<String, Object> historyData = new HashMap<>();
+        historyData.put("points", 500);
+        historyData.put("message", "Подарок от Well Run после создания аккаунта!");
+        historyData.put("type", "EARNED");
+        historyData.put("timestamp", FieldValue.serverTimestamp());
+        historyData.put("currentBalance", 500);
+
+        db.collection("users")
+                .document(uid)
+                .collection("bonus_card")
+                .document("card_history")
+                .collection("history")
+                .add(historyData)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("CreateAccount", "Welcome bonus history added with ID: " + documentReference.getId());
+                    Toast.makeText(CreateAccountActivity.this, "Регистрация успешна! Вам начислено 500 баллов!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateAccountActivity.this, MainActivity.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("CreateAccount", "Error adding welcome bonus history", e);
+                    // Все равно переходим на главную, даже если история не записалась
+                    Toast.makeText(CreateAccountActivity.this, "Регистрация успешна!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateAccountActivity.this, MainActivity.class));
+                    finish();
                 });
     }
 

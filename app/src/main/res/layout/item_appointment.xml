@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,7 +5,8 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="12dp">
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,16 +14,34 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-
-        <!-- Информация об автомобиле -->
-        <TextView
-            android:id="@+id/tv_car_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Toyota Camry"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <!-- Информация об автомобиле -->
+            <TextView
+                android:id="@+id/tv_car_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Toyota Camry"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выполнен"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:padding="4dp"
+                android:textColor="@color/primary_color" />
+
+        </LinearLayout>
 
         <!-- Адрес СТО -->
         <LinearLayout
@@ -45,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:text="ул. Примерная, 123"
                 android:textSize="14sp" />
+
         </LinearLayout>
 
         <!-- Дата и время записи -->
@@ -52,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="4dp">
 
             <ImageView
                 android:layout_width="16dp"
@@ -68,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:text="12 мая 2023, 14:30"
                 android:textSize="14sp" />
+
         </LinearLayout>
 
         <!-- Разделитель -->
@@ -75,21 +95,24 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E0E0E0"
-            android:layout_marginVertical="8dp" />
+            android:layout_marginVertical="4dp" />
 
+        <!-- Layout для обычной записи с ценой -->
         <LinearLayout
+            android:id="@+id/price_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Итого:"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
-        <!-- Стоимость -->
+            <!-- Стоимость -->
             <TextView
                 android:id="@+id/tv_total_price"
                 android:layout_width="match_parent"
@@ -99,7 +122,38 @@
                 android:textStyle="bold"
                 android:textColor="@color/primary_color"
                 android:gravity="end" />
-    </LinearLayout>
+
+        </LinearLayout>
+        <!-- Layout для быстрой записи -->
+        <LinearLayout
+            android:id="@+id/quick_booking_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <!-- Иконка молнии -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/power_ic"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/primary_color" />
+
+            <!-- Текст "Быстрая запись" -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Быстрая запись"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

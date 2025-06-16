@@ -25,4 +25,13 @@
         <item name="strokeWidth">1dp</item>  <!-- Толщина рамки -->
     </style>
 
+    <style name="RedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:elevation">12dp</item>  <!-- Уровень поднятия -->
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="cornerRadius">8dp</item>  <!-- Закругление углов -->
+
+    </style>
+
+
 </resources>

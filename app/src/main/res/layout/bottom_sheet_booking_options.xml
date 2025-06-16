@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/option_quick_booking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Быстрая запись"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        app:icon="@drawable/power_ic"
+        app:iconTint="@color/black"
+        app:iconGravity="start"
+        app:iconPadding="8dp"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        style="@style/WhiteButton"
+        android:textAllCaps="false"
+        app:backgroundTint="@android:color/transparent"
+        app:cardUseCompatPadding="true"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/option_catalog_booking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выбрать услуги из каталога"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        app:icon="@drawable/service_ic"
+        app:iconTint="@color/black"
+        app:iconGravity="start"
+        app:iconPadding="8dp"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        style="@style/WhiteButton"
+        android:textAllCaps="false"
+        app:backgroundTint="@android:color/transparent"
+        android:layout_marginBottom="8dp"/>
+
+</LinearLayout>

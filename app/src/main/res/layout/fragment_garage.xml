@@ -20,30 +20,18 @@
 
     <!-- Кнопка записи (всегда видна внизу) -->
     <Button
-        android:id="@+id/btn_book_service"
+        android:id="@+id/btn_add_car"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="24dp"
-        android:text="@string/book_service"
+        android:text="Добавить авто"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:backgroundTint="@null"
-        android:background="@drawable/rounded_button"
-        android:textColor="@color/white" />
+        style="@style/RedButton"/>
 
-    <!-- Список записей -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_appointments"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/title_text"
-        android:layout_above="@id/btn_book_service"
-        android:paddingTop="8dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false"
-        android:visibility="gone" />
 
     <!-- Пустое состояние -->
     <LinearLayout
@@ -51,11 +39,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title_text"
-        android:layout_above="@id/btn_book_service"
+        android:layout_above="@id/btn_add_car"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:padding="24dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <!-- Иллюстрация -->
         <ImageView
@@ -78,27 +66,57 @@
             android:lineSpacingExtra="4dp" />
     </LinearLayout>
 
-    <!-- Состояние загрузки -->
-    <LinearLayout
-        android:id="@+id/loading_layout"
+    <!-- RecyclerView для автомобилей -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_cars"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title_text"
-        android:layout_above="@id/btn_book_service"
+        android:layout_above="@id/btn_add_car"
+        android:padding="8dp"
+        android:visibility="visible" />
+
+
+
+    <!-- Replace the empty_state_layout with this -->
+    <LinearLayout
+        android:id="@+id/empty_user_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_text"
+        android:layout_above="@id/btn_add_car"
         android:orientation="vertical"
         android:gravity="center"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:background="@drawable/gradient_garage_background"
+        android:padding="24dp"
+        android:layout_marginBottom="8dp">
 
-        <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:indeterminateTint="@color/primary_color" />
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/fix_logo"
+            android:layout_marginBottom="24dp"
+            />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Для того чтобы добавить автомобиль необходимо зарегестрироваться"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btn_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Загрузка..."
-            android:textSize="16sp"
-            android:layout_marginTop="16dp" />
+            android:text="Зарегистрироваться"
+            android:textColor="@color/primary_color"
+            style="@style/WhiteButton"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:textAllCaps="false"/>
     </LinearLayout>
 </RelativeLayout>

@@ -47,15 +47,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:elevation="8dp"
-        app:cardCornerRadius="8dp">
+        android:elevation="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardUseCompatPadding="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="3dp"
         >
-
+        <TextView
+            android:id="@+id/service_old_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="123"
+            android:textColor="@color/secondary_color"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp"/>
         <!-- Цена -->
         <TextView
             android:id="@+id/service_price"
@@ -120,13 +129,13 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_button"
         android:text="Добавить услугу"
         android:textColor="@android:color/white"
         android:visibility="visible"
         android:minHeight="48dp"
         android:textAllCaps="false"
-        app:backgroundTint="@color/primary_color"/>
+        app:backgroundTint="@null"
+        style="@style/RedButton"/>
 
     <!-- Нижняя часть (итоговая информация) - изначально скрыта -->
     <LinearLayout
@@ -189,7 +198,8 @@
                 android:layout_weight="1"
                 android:text="К записи на СТО"
                 android:textAllCaps="false"
-                style="@style/Widget.MaterialComponents.Button"/>
+                style="@style/RedButton"
+                app:backgroundTint="@null"/>
         </LinearLayout>
     </LinearLayout>
 

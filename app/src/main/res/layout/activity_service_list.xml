@@ -44,12 +44,55 @@
             android:padding="6dp"
             />
     </RelativeLayout>
+    <!-- Новая нижняя секция для быстрой записи -->
+    <LinearLayout
+        android:id="@+id/bottom_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/services_recycler"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Верхняя полоска -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@color/gray_light" />
+
+        <!-- Текст -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Нет нужной услуги?\nОпишите проблему и с вами свяжется мастер-приёмщик для уточнения записи."
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/quick_booking_button"
+            style="@style/WhiteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Быстрая запись"
+            app:icon="@drawable/power_ic"
+            android:textAllCaps="false"
+            android:textColor="@color/primary_color"
+            />
+    </LinearLayout>
 
     <!-- Список услуг -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/services_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/summary_card"
         android:layout_below="@id/buttons"
         android:paddingHorizontal="8dp"
@@ -81,6 +124,18 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- Старая цена (зачеркнутая) -->
+            <TextView
+                android:id="@+id/total_old_price_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2000 ₽"
+                android:textSize="16sp"
+                android:textColor="#757575"
+                android:visibility="gone"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Новая цена -->
             <TextView
                 android:id="@+id/total_price_text"
                 android:layout_width="match_parent"
@@ -106,6 +161,8 @@
                 android:textAllCaps="false"
                 android:background="@drawable/rounded_button"
                 app:backgroundTint="@null"/>
+
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

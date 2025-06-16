@@ -2,10 +2,12 @@ package com.example.autofix.sto;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,16 +43,15 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
     private RecyclerView servicesRecyclerView;
     private ServiceListAdapter serviceAdapter;
     private FirebaseFirestore db;
-
     private String categoryId;
     private String subcategoryId;
     private String subcategoryName;
     private CartViewModel cartViewModel;
-
     private CardView summaryContainer;
     private TextView totalPriceText;
+    private TextView totalOldPriceText;
     private Button proccedToCart;
-    private  ImageView cancelButton, backButton;
+    private ImageView cancelButton, backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
         // Инициализируем ViewModel
         CartViewModelFactory factory = new CartViewModelFactory(getApplication());
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+
 
         // Получаем данные из Intent
         categoryId = getIntent().getStringExtra("category_id");
@@ -80,6 +82,7 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
 
         summaryContainer = findViewById(R.id.summary_card);
         totalPriceText = findViewById(R.id.total_price_text);
+        totalOldPriceText = findViewById(R.id.total_old_price_text);
         proccedToCart = findViewById(R.id.proceed_to_booking_button);
         servicesRecyclerView = findViewById(R.id.services_recycler);
 
@@ -93,6 +96,14 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
 
         backButton = findViewById(R.id.back_button_top);
         backButton.setOnClickListener(v -> onBackPressed());
+
+        Button quickBookingButton = findViewById(R.id.quick_booking_button);
+        quickBookingButton.setOnClickListener(v -> {
+            // Открываем быструю запись с флагом
+            Intent intent = new Intent(ServiceListActivity.this, BookServiceActivity.class);
+            intent.putExtra("IS_QUICK_BOOKING", true);
+            startActivity(intent);
+        });
 
         // Настройка RecyclerView в виде сетки (2 колонки)
         servicesRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -111,7 +122,6 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
 
         // Загрузка данных
         loadServices();
-
     }
 
     private void setupHeader() {
@@ -131,14 +141,42 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
         });
 
         cartViewModel.getTotalPrice().observe(this, totalPrice -> {
-            if (totalPrice != null) {
-                totalPriceText.setText(String.format("%d ₽", totalPrice));
+            updateTotalPriceDisplay(totalPrice);
+        });
+
+        // Добавляем наблюдение за изменениями корзины для обновления адаптера
+        cartViewModel.getCart().observe(this, cart -> {
+            if (serviceAdapter != null) {
+                serviceAdapter.notifyDataSetChanged();
             }
         });
     }
 
-    private void loadServices() {
+    private void updateTotalPriceDisplay(Integer totalPrice) {
+        if (totalPrice == null) return;
 
+        Cart cart = cartViewModel.getCart().getValue();
+        if (cart != null && cart.getDiscount() != null && cart.getDiscount() > 0) {
+            // Рассчитываем оригинальную цену без скидки
+            int discount = cart.getDiscount();
+            int originalPrice = totalPrice * 100 / (100 - discount);
+
+            // Показываем старую цену зачеркнутой
+            totalOldPriceText.setText(String.format("%d ₽", originalPrice));
+            totalOldPriceText.setVisibility(View.VISIBLE);
+            totalOldPriceText.setPaintFlags(totalOldPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            // Показываем новую цену со скидкой
+            totalPriceText.setText(String.format("%d ₽", totalPrice));
+        } else {
+            // Скрываем старую цену и показываем только обычную
+            totalOldPriceText.setVisibility(View.GONE);
+            totalPriceText.setText(String.format("%d ₽", totalPrice));
+        }
+    }
+
+    private void loadServices() {
+        serviceAdapter.showLoading();
         db.collection("service_categories")
                 .document(categoryId)
                 .collection("subcategories")
@@ -188,6 +226,11 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
         }
     }
 
+    @Override
+    public void onServiceAction(Service service) {
+
+    }
+
     private void showCancelConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Отмена записи")
@@ -206,7 +249,7 @@ public class ServiceListActivity extends AppCompatActivity implements ServiceLis
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 })
                 .setNegativeButton("Нет", null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+
                 .show();
     }
 

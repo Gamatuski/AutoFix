@@ -5,9 +5,8 @@
     <!-- Градиент оранжевых оттенков -->
     <gradient
         android:centerY="0.5"
-        android:startColor="#FFA500"
-        android:centerColor="#FF6347"
-        android:endColor="#FF4500"/>
+        android:startColor="#FF6347"
+        android:endColor="@color/primary_color"/>
 
     <!-- Размеры круга -->
     <size

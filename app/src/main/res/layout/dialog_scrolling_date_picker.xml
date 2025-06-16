@@ -15,7 +15,7 @@
         android:text="Готово"
 
         app:backgroundTint="@null"
-        android:background="@drawable/rounded_button"
+        style="@style/RedButton"
         android:textColor="@color/white"
         android:layout_marginBottom="4dp" />
 

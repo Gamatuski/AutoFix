@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="8dp">
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:id="@+id/service_image"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitStart"
             tools:src="@tools:sample/backgrounds/scenic"
             android:contentDescription="Service image" />
 
@@ -39,12 +40,25 @@
                 android:ellipsize="end"
                 tools:text="Service Name With Long Text That Will Be Truncated" />
 
+            <!-- Старая цена (зачеркнутая) -->
             <TextView
-                android:id="@+id/service_price"
+                android:id="@+id/service_old_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/service_name"
                 android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:textColor="@color/secondary_color"
+                android:visibility="gone"
+                tools:text="2000 ₽" />
+
+            <!-- Новая цена -->
+            <TextView
+                android:id="@+id/service_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/service_old_price"
+                android:layout_marginTop="2dp"
                 android:textSize="16sp"
                 android:textColor="@color/secondary_color"
                 tools:text="1500 ₽" />
@@ -59,6 +73,9 @@
                 android:background="@drawable/rounded_button"
                 android:padding="8dp"
                 app:tint="@color/white" />
+
         </RelativeLayout>
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

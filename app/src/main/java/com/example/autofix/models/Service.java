@@ -72,14 +72,25 @@ public class Service implements Serializable {
         this.price = price;
     }
 
+    // Специальные методы для обработки поля Duration из Firebase
     @PropertyName("Duration")
-    public int getDurationMinutes() {
-        return durationMinutes;
+    public void setDurationMinutes(Object duration) {
+        if (duration instanceof Number) {
+            this.durationMinutes = ((Number) duration).intValue();
+        } else if (duration instanceof String) {
+            try {
+                this.durationMinutes = Integer.parseInt((String) duration);
+            } catch (NumberFormatException e) {
+                this.durationMinutes = 0; // значение по умолчанию
+            }
+        } else {
+            this.durationMinutes = 0;
+        }
     }
 
     @PropertyName("Duration")
-    public void setDurationMinutes(int durationMinutes) {
-        this.durationMinutes = durationMinutes;
+    public int getDurationMinutes() {
+        return this.durationMinutes;
     }
 
 

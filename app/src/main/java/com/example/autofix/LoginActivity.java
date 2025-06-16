@@ -54,6 +54,12 @@ public class LoginActivity extends AppCompatActivity {
         tvCreateAccount.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
         });
+
+        Button btnGuestLogin = findViewById(R.id.btnGuestLogin);
+        btnGuestLogin.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        });
     }
 
     void changeInProgress(boolean inProgress){

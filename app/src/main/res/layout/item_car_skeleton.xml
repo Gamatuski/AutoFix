@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shimmer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:shimmer_duration="1200">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Placeholder для изображения -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@drawable/skeleton_background_rounded"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Placeholder для марки -->
+                    <View
+                        android:layout_width="150dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/skeleton_background_rounded"
+                        android:layout_marginEnd="8dp" />
+
+                    <!-- Placeholder для модели -->
+                    <View
+                        android:layout_width="150dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/skeleton_background_rounded" />
+                </LinearLayout>
+
+                <!-- Placeholder для поколения -->
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="16dp"
+                    android:background="@drawable/skeleton_background_rounded"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</com.facebook.shimmer.ShimmerFrameLayout>

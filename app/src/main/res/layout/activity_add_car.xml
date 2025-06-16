@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Кнопки Назад и Отмена над шапкой -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp">
+
+        <!-- Кнопка Назад -->
+        <ImageView
+            android:id="@+id/back_button_top"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back_ic"
+            android:padding="2dp" />
+    </RelativeLayout>
+
+    <!-- Шапка с иконкой и шагом -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/title_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/garage_ic"
+            android:background="@drawable/gradient_circle"
+            android:padding="3dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@+id/title_icon"
+            android:text="Добавление автомобиля"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <!-- Основной контент -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Поле выбора марки -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/make_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Марка автомобиля"
+                android:background="@drawable/edittext_rounded">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/make_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:hint="Модель авто"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Поле выбора модели -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/model_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Модель автомобиля"
+               android:background="@drawable/edittext_rounded">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/model_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:hint="Марка авто"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Поле выбора поколения -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/generation_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Поколение автомобиля"
+                android:background="@drawable/edittext_rounded">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/generation_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:hint="Поколение авто"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- RecyclerView для отображения списка -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+
+
+        android:padding="8dp" />
+
+    <!-- Кнопка добавления -->
+    <Button
+        android:id="@+id/btn_add_car"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Добавить автомобиль"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        style="@style/RedButton"
+        android:textAllCaps="false"
+        />
+</LinearLayout>

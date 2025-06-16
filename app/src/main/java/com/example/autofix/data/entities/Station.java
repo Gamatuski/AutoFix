@@ -19,7 +19,7 @@ import java.util.Locale;
 
 @IgnoreExtraProperties
 public class Station implements Parcelable {
-    private String phone = "+7 962-(583)-66-32";
+    private String phone = "+7 (4212) 72-03-03";
     private String id;
     private String city;
     private String street;
@@ -225,9 +225,7 @@ public class Station implements Parcelable {
                             List<String> availableSlots = new ArrayList<>();
                             if (times != null) {
                                 for (Map.Entry<String, Boolean> entry : times.entrySet()) {
-                                    if (Boolean.TRUE.equals(entry.getValue())) {
-                                        availableSlots.add(entry.getKey());
-                                    }
+                                    availableSlots.add(entry.getKey());
                                 }
                             }
                             listener.onTimeSlotsLoaded(availableSlots);
@@ -244,6 +242,8 @@ public class Station implements Parcelable {
             listener.onTimeSlotsLoaded(new ArrayList<>());
         }
     }
+
+
 
     // Вспомогательные методы
     public String getAddress() {

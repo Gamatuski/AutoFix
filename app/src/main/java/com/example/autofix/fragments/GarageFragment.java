@@ -7,20 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.autofix.AppointmentDetailsActivity;
-import com.example.autofix.R;
+import com.example.autofix.CreateAccountActivity;
 
-import com.example.autofix.adapters.AppointmentsAdapter;
-import com.example.autofix.models.Appointment;
-import com.example.autofix.sto.BookServiceActivity;
+
+import com.example.autofix.MainActivity;
+import com.example.autofix.R;
+import com.example.autofix.adapters.CarsAdapter;
+import com.example.autofix.addCar.AddCarActivity;
+import com.example.autofix.addCar.CarDetailsActivity;
+import com.example.autofix.models.Car;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,14 +28,17 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-public class GarageFragment extends Fragment implements AppointmentsAdapter.OnAppointmentClickListener {
+public class GarageFragment extends Fragment {
+    private View emptyStateView, emptyUserView;
 
-    private RecyclerView appointmentsRecyclerView;
-    private AppointmentsAdapter appointmentsAdapter;
-    private View emptyStateView;
-    private View loadingView;
-    FirebaseUser currentUser;
+    private RecyclerView recyclerView;
+    private CarsAdapter carsAdapter;
+    private List<Car> carsList;
+    private FirebaseUser currentUser;
+    private Button btnAddCar;
 
     public GarageFragment() {
         // Required empty public constructor
@@ -47,139 +50,167 @@ public class GarageFragment extends Fragment implements AppointmentsAdapter.OnAp
         View view = inflater.inflate(R.layout.fragment_garage, container, false);
 
         // Инициализация views
-        appointmentsRecyclerView = view.findViewById(R.id.recycler_appointments);
         emptyStateView = view.findViewById(R.id.empty_state_layout);
-        loadingView = view.findViewById(R.id.loading_layout);
-        Button btnBookService = view.findViewById(R.id.btn_book_service);
+        emptyUserView = view.findViewById(R.id.empty_user_layout);
+
+        recyclerView = view.findViewById(R.id.recycler_view_cars);
+        btnAddCar = view.findViewById(R.id.btn_add_car);
 
         // Настройка RecyclerView
-        appointmentsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        appointmentsAdapter = new AppointmentsAdapter(getContext(), new ArrayList<>(), this);
-        appointmentsRecyclerView.setAdapter(appointmentsAdapter);
+        carsList = new ArrayList<>();
+        carsAdapter = new CarsAdapter(carsList, getContext(), car -> {
+            // Обработка клика по автомобилю
+            Intent intent = new Intent(getContext(), CarDetailsActivity.class);
+            intent.putExtra("car_id", car.getId());
+            startActivity(intent);
+        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(carsAdapter);
 
-        // Настройка кнопки
-        btnBookService.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), BookServiceActivity.class));
+        // Настройка кнопки добавления авто
+        btnAddCar.setOnClickListener(v -> {
+            openAddCarActivity();
         });
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
-            // Загружаем записи для текущего пользователя
-            loadAppointmentsForUser(currentUser.getUid());
+            // Пользователь авторизован, загружаем данные
+            loadCarsFromFirebase();
         } else {
-            // Пользователь не авторизован, показываем пустое состояние
-            showEmptyState();
+            // Пользователь не авторизован
+            showGuestView();
         }
+
         return view;
     }
 
-    private void loadAppointmentsForUser(String userId) {
-        // Показываем индикатор загрузки
-        showLoading();
+    private void loadCarsFromFirebase() {
+        carsAdapter.showLoading();
 
-        // Получаем записи для конкретного пользователя
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        Log.d("GarageFragment", "Loading cars for user: " + userId);
+
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(userId)
-                .collection("appointments")
+                .collection("cars")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<Appointment> appointmentsList = new ArrayList<>();
+                        List<Car> carsList = new ArrayList<>();
+                        Log.d("GarageFragment", "Found " + task.getResult().size() + " cars");
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             try {
-                                // Преобразуем документ в объект Appointment
-                                Appointment appointment = new Appointment();
-                                appointment.setId(document.getId());
+                                Car car = new Car();
+                                car.setId(document.getId());
 
-                                // Получаем данные из документа
-                                if (document.contains("stationId"))
-                                    appointment.setStationId(document.getString("stationId"));
+                                if (document.contains("make"))
+                                    car.setBrand(document.getString("make"));
+                                if (document.contains("model"))
+                                    car.setModel(document.getString("model"));
+                                if (document.contains("generation"))
+                                    car.setGeneration(document.getString("generation"));
+                                if (document.contains("image"))
+                                    car.setImageUrl(document.getString("image"));
+                                carsList.add(car);
+                                Log.d("GarageFragment", "Added car: " + car.getBrand() + " " + car.getModel());
 
-                                if (document.contains("stationAddress"))
-                                    appointment.setStationAddress(document.getString("stationAddress"));
-
-                                if (document.contains("bookingDate"))
-                                    appointment.setBookingDate(document.getString("bookingDate"));
-
-                                if (document.contains("bookingTime"))
-                                    appointment.setBookingTime(document.getString("bookingTime"));
-
-                                if (document.contains("carId"))
-                                    appointment.setCarId(document.getString("carId"));
-
-                                if (document.contains("carName"))
-                                    appointment.setCarName(document.getString("carName"));
-
-                                if (document.contains("totalPrice"))
-                                    appointment.setTotalPrice(document.getLong("totalPrice").intValue());
-
-                                if (document.contains("status"))
-                                    appointment.setStatus(document.getString("status"));
-
-                                if (document.contains("createdAt"))
-                                    appointment.setCreatedAt(document.getDate("createdAt"));
-
-                                appointmentsList.add(appointment);
                             } catch (Exception e) {
-                                Log.e("GarageFragment", "Error parsing appointment: " + e.getMessage());
+                                Log.e("GarageFragment", "Error parsing car: " + e.getMessage());
                             }
                         }
 
-                        // Обновляем UI
-                        updateUI(appointmentsList);
+                        // ВАЖНО: Обновляем список с полученными данными
+                        updateCarsList(carsList);
 
                     } else {
-                        Log.e("GarageFragment", "Error getting appointments", task.getException());
-                        // Показываем пустое состояние в случае ошибки
-                        showEmptyState();
+                        Log.e("GarageFragment", "Error getting cars", task.getException());
+                        // Показываем пустой список в случае ошибки
+                        updateCarsList(new ArrayList<>());
                     }
                 });
     }
 
-    private void updateUI(List<Appointment> appointments) {
-        // Скрываем индикатор загрузки
-        loadingView.setVisibility(View.GONE);
+    private void updateCarsList(List<Car> carsList) {
+        this.carsList.clear();
+        this.carsList.addAll(carsList);
 
-        if (appointments.isEmpty()) {
-            // Если записей нет, показываем пустое состояние
+        if (carsList.isEmpty()) {
             showEmptyState();
         } else {
-            // Если записи есть, показываем список
-            showAppointmentsList(appointments);
+            showCarsRecyclerView();
         }
+
+        if (carsAdapter != null) {
+            carsAdapter.updateCars(carsList);
+            carsAdapter.hideLoading();
+        }
+
+
+        Log.d("GarageFragment", "Updated cars list with " + carsList.size() + " items");
+    }
+
+    private void openAddCarActivity() {
+        Intent intent = new Intent(getActivity(), AddCarActivity.class);
+
+        if (MainActivity.cachedMakes != null) {
+            intent.putStringArrayListExtra("makes_list", new ArrayList<>(MainActivity.cachedMakes));
+        }
+
+        // Передаем модели популярных марок
+        Bundle modelsBundle = new Bundle();
+        for (Map.Entry<String, List<String>> entry : MainActivity.cachedModels.entrySet()) {
+            modelsBundle.putStringArrayList(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
+        intent.putExtra("models_cache", modelsBundle);
+
+        startActivity(intent);
+    }
+
+    private void showGuestView() {
+        emptyUserView.setVisibility(View.VISIBLE);
+        emptyStateView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+
+        btnAddCar.setEnabled(false);
+
+        Button registerButton = emptyUserView.findViewById(R.id.btn_register);
+        registerButton.setVisibility(View.VISIBLE);
+        registerButton.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), CreateAccountActivity.class));
+        });
     }
 
     private void showEmptyState() {
         emptyStateView.setVisibility(View.VISIBLE);
-        appointmentsRecyclerView.setVisibility(View.GONE);
+        emptyUserView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+
+        btnAddCar.setEnabled(true);
     }
 
-    private void showAppointmentsList(List<Appointment> appointments) {
+    private void showCarsRecyclerView() {
+        recyclerView.setVisibility(View.VISIBLE);
         emptyStateView.setVisibility(View.GONE);
-        appointmentsRecyclerView.setVisibility(View.VISIBLE);
-        appointmentsAdapter.updateAppointments(appointments);
+        emptyUserView.setVisibility(View.GONE);
+
+        btnAddCar.setEnabled(true);
     }
 
-    private void showLoading() {
-        loadingView.setVisibility(View.VISIBLE);
-        emptyStateView.setVisibility(View.GONE);
-        appointmentsRecyclerView.setVisibility(View.GONE);
-    }
 
-    @Override
-    public void onAppointmentClick(Appointment appointment) {
-        // Открываем активность с деталями записи
-        Intent intent = new Intent(getActivity(), AppointmentDetailsActivity.class);
-        intent.putExtra("APPOINTMENT_ID", appointment.getId());
-        this.startActivity(intent);
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Обновляем данные при возвращении к фрагменту
-        loadAppointmentsForUser(currentUser.getUid());
+
+        // Обновляем данные при возвращении на фрагмент
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            loadCarsFromFirebase();
+        } else {
+            showGuestView();
+        }
     }
+
 }

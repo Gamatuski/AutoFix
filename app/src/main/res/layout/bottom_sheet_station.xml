@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:text="@string/book_service"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_button"
+        style="@style/RedButton"
         app:backgroundTint="@null"
         android:textColor="@color/white"/>
 

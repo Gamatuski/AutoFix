@@ -205,6 +205,8 @@ public class CartRepository {
                 orderData.put("totalDuration", currentCart.getTotalDuration());
                 orderData.put("status", "pending");
                 orderData.put("createdAt", System.currentTimeMillis());
+                orderData.put("discountPercent", currentCart.getDiscount());
+                orderData.put("originalPrice", currentCart.getTotalPrice() * 100 / (100 - currentCart.getDiscount()));
 
                 if (currentCart.getComment() != null && !currentCart.getComment().isEmpty()) {
                     orderData.put("comment", currentCart.getComment());
@@ -269,75 +271,41 @@ public class CartRepository {
         });
     }
 
-    /**
-     * Получает заказ из Firestore по ID
-     */
-    public void getOrderById(String orderId, OnOrderLoadedListener listener) {
-        db.collection("orders")
-                .document(orderId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, Object> orderData = documentSnapshot.getData();
-                        if (listener != null) {
-                            listener.onOrderLoaded(true, orderData);
-                        }
-                    } else {
-                        if (listener != null) {
-                            listener.onOrderLoaded(false, null);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onOrderLoaded(false, null);
-                    }
-                });
-    }
 
-    /**
-     * Обновляет статус заказа в Firestore
-     */
-    public void updateOrderStatus(String orderId, String userId, String status, OnOrderStatusUpdatedListener listener) {
-        // Обновляем в основной коллекции заказов
-        db.collection("orders")
-                .document(orderId)
-                .update("status", status)
-                .addOnSuccessListener(aVoid -> {
-                    // Обновляем в коллекции пользователя
-                    db.collection("users")
-                            .document(userId)
-                            .collection("orders")
-                            .document(orderId)
-                            .update("status", status)
-                            .addOnSuccessListener(aVoid2 -> {
-                                // Обновляем локальную БД
-                                updateOrderInfo(orderId, status);
+    public void applyDiscount(int discountPercent) {
+        executor.execute(() -> {
+            Cart cart = cartDao.getCartSync();
+            if (cart == null) {
+                // Создаем пустую корзину если её нет
+                cart = new Cart();
+                cart.setTotalPrice(0);
+                cart.setTotalDuration(0);
+                cartDao.insertCart(cart);
+                Log.d("CartRepository", "Created new cart for discount application");
+            }
 
-                                if (listener != null) {
-                                    listener.onOrderStatusUpdated(true);
-                                }
-                            })
-                            .addOnFailureListener(e -> {
-                                if (listener != null) {
-                                    listener.onOrderStatusUpdated(false);
-                                }
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onOrderStatusUpdated(false);
-                    }
-                });
+            // Применяем скидку только если она еще не применена
+            if (cart.getDiscount() == null || cart.getDiscount() != discountPercent) {
+                cart.setDiscount(discountPercent);
+
+                // Если в корзине есть товары, пересчитываем цену
+                List<CartItem> items = cartDao.getAllCartItemsSync();
+                if (items != null && !items.isEmpty()) {
+                    int originalPrice = items.stream().mapToInt(CartItem::getServicePrice).sum();
+                    cart.updateBasePrice(originalPrice); // Используем метод из Cart
+                    Log.d("CartRepository", "Discount applied: " + discountPercent + "% to cart with original price: " + originalPrice + ", final price: " + cart.getTotalPrice());
+                } else {
+                    Log.d("CartRepository", "Discount saved for future use: " + discountPercent + "%");
+                }
+
+                cartDao.updateCart(cart);
+            } else {
+                Log.d("CartRepository", "Discount already applied: " + discountPercent + "%");
+            }
+        });
     }
 
 
 
-    public interface OnOrderLoadedListener {
-        void onOrderLoaded(boolean success, Map<String, Object> orderData);
-    }
 
-    public interface OnOrderStatusUpdatedListener {
-        void onOrderStatusUpdated(boolean success);
-    }
 }

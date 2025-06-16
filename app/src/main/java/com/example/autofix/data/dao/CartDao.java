@@ -67,4 +67,6 @@ public interface CartDao {
 
     @Query("SELECT * FROM cart_items WHERE serviceId IN (:serviceIds)")
     List<CartItem> getCartItemsByServiceIds(List<String> serviceIds);
+    @Query("UPDATE cart SET discount = :discount WHERE id = 1")
+    void updateDiscount(int discount);
 }

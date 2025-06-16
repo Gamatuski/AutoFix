@@ -9,6 +9,14 @@
     android:gravity="center"
     tools:context=".SplashActivity">
 
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/fix_logo_2"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

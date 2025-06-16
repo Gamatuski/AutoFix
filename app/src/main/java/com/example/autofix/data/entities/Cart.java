@@ -1,5 +1,8 @@
 package com.example.autofix.data.entities;
 
+import android.content.Intent;
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -15,7 +18,9 @@ public class Cart {
     private String selectedCarId;
     private String selectedCarName;
     private int totalPrice;
+    private Integer originalPrice;
     private int totalDuration;
+    private Integer discount;
 
     // Поля для СТО и записи
     private String stationId;
@@ -142,18 +147,83 @@ public class Cart {
     public boolean isBookingComplete() {
         return stationId != null && bookingDate != null && bookingTime != null;
     }
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    public Integer getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(Integer originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    // Применяем скидку в процентах
+    // Применяем скидку в процентах
+    public void applyDiscount(int discountPercent) {
+        // Если нет оригинальной цены, используем текущую цену как оригинальную
+        if (originalPrice == null) {
+            originalPrice = totalPrice;
+        }
+
+        // Устанавливаем процент скидки
+        this.discount = discountPercent;
+
+        // Рассчитываем новую цену со скидкой от оригинальной цены
+        if (originalPrice > 0) {
+            int discountAmount = (originalPrice * discountPercent) / 100;
+            this.totalPrice = originalPrice - discountAmount;
+        }
+
+        Log.d("Cart", "Discount applied: " + discountPercent + "%, Original: " + originalPrice +
+                ", Discount amount: " + getDiscountAmount() + ", New price: " + totalPrice);
+    }
+
+    // Обновляем базовую цену (когда добавляются/удаляются услуги)
+    public void updateBasePrice(int newPrice) {
+        if (discount != null && discount > 0) {
+            // Если есть активная скидка, обновляем оригинальную цену и пересчитываем со скидкой
+            this.originalPrice = newPrice;
+            int discountAmount = (newPrice * discount) / 100;
+            this.totalPrice = newPrice - discountAmount;
+        } else {
+            // Если скидки нет, просто обновляем цену
+            this.totalPrice = newPrice;
+            this.originalPrice = newPrice;
+        }
+        Log.d("Cart", "Base price updated to: " + newPrice + ", Final price: " + totalPrice + ", Discount: " + discount + "%");
+    }
+
+    // Получаем размер скидки в рублях
+    public int getDiscountAmount() {
+        if (originalPrice != null && discount != null && discount > 0) {
+            return originalPrice - totalPrice;
+        }
+        return 0;
+    }
+
+    // Получаем цену для отображения (с учетом скидки)
+    public int getDisplayPrice() {
+        return totalPrice;
+    }
+
+    // Получаем оригинальную цену для отображения зачеркнутой
+    public int getOriginalPriceForDisplay() {
+        return originalPrice != null ? originalPrice : totalPrice;
+    }
+
+    // Проверяем, есть ли активная скидка
+    public boolean hasActiveDiscount() {
+        return discount != null && discount > 0 && originalPrice != null;
+    }
 
 
 
-
-
-    // Метод для добавления элемента в корзину
-
-
-    // Метод для удаления элемента из корзины
-
-
-    // Метод для очистки корзины
 
 
     public void clearBookingInfo() {

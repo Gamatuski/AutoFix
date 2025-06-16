@@ -54,9 +54,9 @@ public class DatePickerAdapter extends BottomSheetDialogFragment {
         numPickerMonth.setMaxValue(12);
         numPickerMonth.setValue(calendar.get(Calendar.MONTH) + 1); // Месяцы начинаются с 0
 
-        numPickerYear.setMinValue(2000);
-        numPickerYear.setMaxValue(2030);
-        numPickerYear.setValue(calendar.get(Calendar.YEAR));
+        numPickerYear.setMinValue(1950);
+        numPickerYear.setMaxValue(calendar.get(Calendar.YEAR)-18);
+        numPickerYear.setValue(calendar.get(Calendar.YEAR)-36);
 
         // Обработка нажатия на кнопку "Готово"
         Button btnDone = view.findViewById(R.id.btnDone);

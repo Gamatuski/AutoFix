@@ -1,0 +1,89 @@
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="?android:attr/selectableItemBackground">
+
+        <!-- Иконка операции -->
+        <ImageView
+            android:id="@+id/icon_image_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/plus_ic"
+            android:background="@drawable/gradient_circle"
+            android:backgroundTint="@color/green"
+            android:padding="3dp"
+            app:tint="@color/white" />
+
+        <!-- Основная информация -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Сообщение -->
+            <TextView
+                android:id="@+id/message_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Начисление за покупку"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textStyle="normal" />
+
+            <!-- Дата и время -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/date_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 дек 2023"
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • "
+                    android:textSize="14sp"
+                    android:textColor="@color/secondary_color" />
+
+                <TextView
+                    android:id="@+id/time_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="14:30"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondary_color" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Количество баллов -->
+        <TextView
+            android:id="@+id/points_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="+150"
+            android:textSize="16sp"
+            android:textColor="@color/green_second"
+            android:background="@drawable/status_background_silver"
+            android:backgroundTint="@color/gray_light"/>
+
+    </LinearLayout>
+
+

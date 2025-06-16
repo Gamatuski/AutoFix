@@ -34,16 +34,16 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/fix_logo"
-                android:background="@drawable/gradient_circle"
+
                 android:scaleType="fitCenter"
-                android:padding="5dp"
-                app:tint="@color/white"/>
+                android:adjustViewBounds="true"
+                />
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="AUTO FIX"
+            android:text="WELL RUN"
             android:textSize="18sp"
             android:gravity="left"
             android:layout_marginBottom="16dp" />
@@ -181,7 +181,9 @@
             android:id="@+id/progress_bar"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp"
+            android:textAllCaps="false"
+            style="@style/RedButton"/>
 
     </LinearLayout>
 </ScrollView>

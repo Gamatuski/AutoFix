@@ -203,7 +203,7 @@
         android:paddingHorizontal="8dp"
         android:clipToPadding="false"/>
 
-    <!-- Нижняя панель с итогами -->
+    <!-- Нижняя часть (итоговая информация) в CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/summary_card"
         android:layout_width="match_parent"
@@ -215,6 +215,7 @@
         app:cardBackgroundColor="@color/white">
 
         <LinearLayout
+            android:id="@+id/summary_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -228,6 +229,18 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- Старая цена (зачеркнутая) -->
+            <TextView
+                android:id="@+id/total_old_price_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2000 ₽"
+                android:textSize="16sp"
+                android:textColor="#757575"
+                android:visibility="gone"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Новая цена -->
             <TextView
                 android:id="@+id/total_price_text"
                 android:layout_width="match_parent"
@@ -253,6 +266,8 @@
                 android:textAllCaps="false"
                 android:background="@drawable/rounded_button"
                 app:backgroundTint="@null"/>
+
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

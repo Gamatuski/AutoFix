@@ -2,10 +2,11 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="140dp"
-    android:layout_height="wrap_content"
+    android:layout_height="140dp"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="8dp">
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,15 +28,21 @@
             android:layout_marginTop="4dp"
             android:textSize="12sp"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <TextView
             android:id="@+id/book_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:text="Записаться"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:textColor="@color/primary_color"
+            android:gravity="left" />
 
-            android:textColor="@color/primary_color" />
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

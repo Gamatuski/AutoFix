@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AutoFix</string>
+    <string name="app_name">Well Run</string>
     <string name="garage_title">Гараж</string>
     <string name="profile_title">Профиль</string>
     <string name="garage_empty_description">Здесь будут данные вашего авто\nВы сможете просматривать ближайшие записи, историю обслуживания, рекомендации для автомобиля после диагностик и записывать авто на СТО.</string>

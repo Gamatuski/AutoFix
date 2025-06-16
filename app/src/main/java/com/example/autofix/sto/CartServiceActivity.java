@@ -3,12 +3,15 @@ package com.example.autofix.sto;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +35,7 @@ public class CartServiceActivity extends AppCompatActivity
         implements CartServiceAdapter.OnItemDeleteListener {
     private CartViewModel cartViewModel;
     private CartServiceAdapter adapter;
-    private TextView totalPriceText;
+    private TextView totalPriceText, totalOldPriceText;
     private TextView carNameText;
     private TextView clearCartText;
     private Button proceedButton, addServiceButton;
@@ -48,20 +51,32 @@ public class CartServiceActivity extends AppCompatActivity
         View progressFill = findViewById(R.id.progress_fill);
         View secondDot = findViewById(R.id.second_dot);
 
-        // Устанавливаем ширину прогресс-бара до второй точки
-        secondDot.post(() -> {
-            int dotPosition = (int) secondDot.getX() + secondDot.getWidth() / 2;
-            ViewGroup.LayoutParams params = progressFill.getLayoutParams();
-            params.width = dotPosition;
-            progressFill.setLayoutParams(params);
-        });
+        ViewTreeObserver vto = secondDot.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                secondDot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
+                // Получаем ширину родительского LinearLayout
+                LinearLayout dotsContainer = (LinearLayout) secondDot.getParent().getParent();
+                int containerWidth = dotsContainer.getWidth();
+
+                // Вторая точка находится на 2/3 от общей ширины
+                int progressWidth = (int) (containerWidth * 0.5f); // 2/3 от ширины
+
+                ViewGroup.LayoutParams params = progressFill.getLayoutParams();
+                params.width = progressWidth;
+                progressFill.setLayoutParams(params);
+            }
+        });
         // Инициализация ViewModel
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
 
         // Инициализация views
         totalPriceText = findViewById(R.id.total_price_text);
+        totalOldPriceText = findViewById(R.id.total_old_price_text);
         carNameText = findViewById(R.id.car_name_text);
+
         proceedButton = findViewById(R.id.proceed_to_booking_button);
         clearCartText = findViewById(R.id.Clear_cart_text);
         addServiceButton = findViewById(R.id.add_service_button);
@@ -95,11 +110,12 @@ public class CartServiceActivity extends AppCompatActivity
         // Настройка ItemTouchHelper для свайпа
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-// Создаем и прикрепляем ItemTouchHelper с нашим SwipeToDeleteCallback
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(adapter.getSwipeToDeleteCallback(vibrator));
+        // Создаем и прикрепляем ItemTouchHelper с нашим SwipeToDeleteCallback
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(adapter.getSwipeToDeleteCallback(vibrator, this));
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         // Наблюдаем за изменениями в корзине
+        // Добавляем наблюдение за изменениями корзины
         cartViewModel.getCart().observe(this, cart -> {
             if (cart != null) {
                 if (cart.getSelectedCarName() != null) {
@@ -110,41 +126,75 @@ public class CartServiceActivity extends AppCompatActivity
                 // Сохраняем ID и имя автомобиля
                 carId = cart.getSelectedCarId();
                 carName = cart.getSelectedCarName();
+
+                // Обновляем отображение цены при изменении скидки
+                Integer totalPrice = cartViewModel.getTotalPrice().getValue();
+                if (totalPrice != null) {
+                    updateTotalPriceDisplay(totalPrice);
+                }
             }
         });
 
 
         cartViewModel.getTotalPrice().observe(this, total -> {
-            if (total != null) {
-                totalPriceText.setText(String.format("%d ₽", total));
-            }
+            updateTotalPriceDisplay(total);
         });
+
 
         cartViewModel.getAllCartItems().observe(this, cartItems -> {
             if (cartItems != null && !cartItems.isEmpty()) {
-                // Есть товары в корзине - показываем список
+                // Есть услуги — показываем полный интерфейс
                 emptyCartContainer.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                adapter.updateItems(cartItems);
-
-                // Активируем кнопку "Далее"
                 proceedButton.setEnabled(true);
+                proceedButton.setText("Записаться на СТО");
             } else {
-                // Корзина пуста - показываем пустое состояние
+                // Корзина пустая — показываем пустое состояние
                 emptyCartContainer.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
-                adapter.updateItems(new ArrayList<>());
-
-                // Деактивируем кнопку "Далее"
-                proceedButton.setEnabled(false);
+                proceedButton.setEnabled(true); // или false — зависит от дизайна
+                proceedButton.setText("Записаться без услуг");
             }
+
+            adapter.updateItems(cartItems); // обновляем список
         });
 
         // Обработка кнопки "Далее"
         proceedButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BookingActivity.class);
-            startActivity(intent);
+            if (cartViewModel.getAllCartItems() == null) {
+                // Корзина пустая — быстрая запись
+                Intent intent = new Intent(CartServiceActivity.this, BookServiceActivity.class);
+                intent.putExtra("IS_QUICK_BOOKING", true);
+                startActivity(intent);
+            } else {
+                // В корзине есть услуги — обычная запись
+                Intent intent = new Intent(CartServiceActivity.this, BookingActivity.class);
+                startActivity(intent);
+            }
         });
+    }
+
+    private void updateTotalPriceDisplay(Integer totalPrice) {
+        if (totalPrice == null) return;
+
+        Cart cart = cartViewModel.getCart().getValue();
+        if (cart != null && cart.getDiscount() != null && cart.getDiscount() > 0) {
+            // Рассчитываем оригинальную цену без скидки
+            int discount = cart.getDiscount();
+            int originalPrice = totalPrice * 100 / (100 - discount);
+
+            // Показываем старую цену зачеркнутой
+            totalOldPriceText.setText(String.format("%d ₽", originalPrice));
+            totalOldPriceText.setVisibility(View.VISIBLE);
+            totalOldPriceText.setPaintFlags(totalOldPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            // Показываем новую цену со скидкой
+            totalPriceText.setText(String.format("%d ₽", totalPrice));
+        } else {
+            // Скрываем старую цену и показываем только обычную
+            totalOldPriceText.setVisibility(View.GONE);
+            totalPriceText.setText(String.format("%d ₽", totalPrice));
+        }
     }
 
     private void showClearCartConfirmationDialog() {
@@ -174,7 +224,7 @@ public class CartServiceActivity extends AppCompatActivity
 
         // Обновляем UI
         adapter.updateItems(new ArrayList<>());
-        totalPriceText.setText("0 ₽");
+        updateTotalPriceDisplay(0);
 
         // Показываем сообщение об успешной очистке
         Toast.makeText(this, "Корзина очищена", Toast.LENGTH_SHORT).show();

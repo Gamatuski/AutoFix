@@ -61,7 +61,7 @@
                 app:tint="@color/white" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/step_conut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -76,7 +76,7 @@
                 android:id="@+id/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
+                android:layout_below="@+id/step_conut"
                 android:layout_marginStart="11dp"
                 android:layout_marginTop="2dp"
                 android:layout_toEndOf="@+id/title_icon"
@@ -85,7 +85,7 @@
                 android:textSize="20sp" />
         </RelativeLayout>
 
-        <!-- Прогресс-бар с точками -->
+
         <!-- Прогресс-бар с точками -->
         <RelativeLayout
             android:id="@+id/progress_bar"
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <!-- Первая точка (1/3) -->
+                <!-- Первая точка (1/3 или 1/2) -->
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -126,7 +126,7 @@
                         android:background="@drawable/progress_dot_active"
                         />
                 </RelativeLayout>
-                <!-- Вторая точка (2/3) -->
+                <!-- Вторая точка (2/3 или 2/2) -->
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -139,8 +139,9 @@
                         android:layout_centerInParent="true"
                         android:background="@drawable/progress_dot_active"/>
                 </RelativeLayout>
-                <!-- Третья точка (3/3) -->
+                <!-- Третья точка (3/3) - скрывается при isQuickBooking -->
                 <RelativeLayout
+                    android:id="@+id/third_dot_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -238,9 +239,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="4dp"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="@color/white">
+        app:cardBackgroundColor="@color/white"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -248,8 +250,9 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Итого -->
+            <!-- Итого (будет скрыто при быстром бронировании) -->
             <LinearLayout
+                android:id="@+id/total_price_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -275,8 +278,9 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
 
-            <!-- Без учета стоимости запчастей -->
+            <!-- Без учета стоимости запчастей (будет скрыто при быстром бронировании) -->
             <TextView
+                android:id="@+id/disclaimer_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="без учета стоимости запчастей"
@@ -285,13 +289,15 @@
                 android:gravity="end"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- Кнопка -->
+            <!-- Кнопка (всегда видна) -->
             <Button
                 android:id="@+id/proceed_to_booking_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Записаться на СТО"
-                android:background="@drawable/rounded_button_selector"/>
+                style="@style/RedButton"
+                app:backgroundTint="@null"/>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary_color">#f57c33</color>
+    <color name="primary_color">#a41034</color>
     <color name="secondary_color">#808080</color>
     <color name="editText_color">#e8ebf0</color>
     <color name="text_color">#000000</color>
@@ -11,4 +11,23 @@
     <color name="silver_color">#C0C0C0</color>
     <color name="gold_color">#FFD700</color>
     <color name="ruby_color">#E0115F</color>
+    <color name="green">#00e600</color>
+    <color name="green_second">#20894e</color>
+    <color name="green_light">#def2e9</color>
+
+    <!-- Car selection colors -->
+    <color name="selected_car_background">#FFEBEE</color>
+    <color name="selected_car_stroke">#F44336</color>
+    <color name="default_car_background">#FFFFFF</color>
+    <color name="default_car_stroke">#E0E0E0</color>
+
+    <!-- Text colors -->
+    <color name="primary_text_color">#212121</color>
+    <color name="secondary_text_color">#757575</color>
+    <color name="tertiary_text_color">#9E9E9E</color>
+
+    <!-- Progress bar colors -->
+    <color name="progress_background">#E0E0E0</color>
+    <color name="progress_fill">#F44336</color>
+
 </resources>

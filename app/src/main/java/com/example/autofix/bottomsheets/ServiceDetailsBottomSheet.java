@@ -1,6 +1,7 @@
 package com.example.autofix.bottomsheets;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,20 +32,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.List;
 
 public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
-
     private static final String TAG = "ServiceDetailsBottomSheet";
     private static final String ARG_SERVICE = "service";
-
     private Service service;
     private OnServiceAddedListener listener;
     private CartViewModel cartViewModel;
     private TextView totalPriceText;
-
+    private TextView servicePrice;
+    private TextView serviceOldPrice;
     Button addServiceButton;
     LinearLayout summaryContainer;
     private boolean isServiceInCart = false;
     private CartItem existingCartItem = null;
-
 
     public interface OnServiceAddedListener {
         void onServiceAdded(Service service);
@@ -81,7 +80,6 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         if (service == null) {
             dismiss();
             return;
@@ -90,11 +88,11 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
         // Инициализация views
         ImageView serviceImage = view.findViewById(R.id.service_image);
         TextView serviceName = view.findViewById(R.id.service_name);
-        TextView servicePrice = view.findViewById(R.id.service_price);
+        servicePrice = view.findViewById(R.id.service_price);
+        serviceOldPrice = view.findViewById(R.id.service_old_price); // Добавляем TextView для старой цены
         TextView serviceDuration = view.findViewById(R.id.service_duration);
         TextView serviceDescription = view.findViewById(R.id.service_description);
         addServiceButton = view.findViewById(R.id.add_service_button);
-
         summaryContainer = view.findViewById(R.id.summary_container);
         totalPriceText = view.findViewById(R.id.total_price_text);
         ImageView clearCartButton = view.findViewById(R.id.clear_cart_button);
@@ -102,7 +100,6 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
 
         // Заполнение данными
         serviceName.setText(service.getName());
-        servicePrice.setText(String.format("%d ₽", service.getPrice()));
 
         // Установка длительности (если есть)
         if (service.getDurationMinutes() > 0) {
@@ -125,7 +122,6 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
                     .load(imageUrl)
                     .centerCrop()
                     .placeholder(R.drawable.placeholder_image)
-
                     .listener(new RequestListener<android.graphics.drawable.Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model,
@@ -134,7 +130,6 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
                             Log.e(TAG, "Image load failed: " + (e != null ? e.getMessage() : "unknown error"));
                             return false;
                         }
-
                         @Override
                         public boolean onResourceReady(android.graphics.drawable.Drawable resource,
                                                        Object model,
@@ -149,6 +144,9 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
         } else {
             serviceImage.setImageResource(R.drawable.placeholder_image);
         }
+
+        // Настройка наблюдателей
+        setupObservers();
 
         // Проверяем, есть ли уже эта услуга в корзине
         checkIfServiceInCart();
@@ -167,9 +165,6 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
             }
         });
 
-
-
-
         // Обработчик кнопки перехода к записи
         proceedToCartButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), CartServiceActivity.class);
@@ -178,8 +173,45 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
         });
     }
 
+    private void setupObservers() {
+        // Наблюдаем за изменениями корзины для обновления цены
+        cartViewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
+            updateServicePriceDisplay();
+        });
+    }
+
+    private void updateServicePriceDisplay() {
+        Cart cart = cartViewModel.getCart().getValue();
+        int originalPrice = service.getPrice();
+
+        if (cart != null && cart.getDiscount() != null && cart.getDiscount() > 0) {
+            // Рассчитываем цену со скидкой
+            int discount = cart.getDiscount();
+            int discountedPrice = originalPrice - (originalPrice * discount / 100);
+
+            // Показываем старую цену зачеркнутой
+            if (serviceOldPrice != null) {
+                serviceOldPrice.setText(String.format("%d ₽", originalPrice));
+                serviceOldPrice.setVisibility(View.VISIBLE);
+                serviceOldPrice.setPaintFlags(serviceOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+
+            // Показываем новую цену со скидкой
+            servicePrice.setText(String.format("%d ₽", discountedPrice));
+        } else {
+            // Скрываем старую цену и показываем только обычную
+            if (serviceOldPrice != null) {
+                serviceOldPrice.setVisibility(View.GONE);
+            }
+            servicePrice.setText(String.format("%d ₽", originalPrice));
+        }
+    }
+
     private void checkIfServiceInCart() {
         cartViewModel.getAllCartItems().observe(getViewLifecycleOwner(), cartItems -> {
+            isServiceInCart = false;
+            existingCartItem = null;
+
             if (cartItems != null) {
                 for (CartItem item : cartItems) {
                     if (item.getServiceId().equals(service.getId())) {
@@ -188,11 +220,10 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
                         break;
                     }
                 }
-                updateUI();
             }
+            updateUI();
         });
     }
-
 
     private void updateSummaryInfo() {
         cartViewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> {
@@ -203,6 +234,7 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
             }
         });
     }
+
     public boolean isServiceWasAdded() {
         return isServiceInCart;
     }
@@ -210,11 +242,27 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
     private void addServiceToCart() {
         Cart currentCart = cartViewModel.getCart().getValue();
         if (currentCart != null && currentCart.getSelectedCarId() != null) {
+            // Рассчитываем цену со скидкой если она есть
+            int servicePrice = service.getPrice();
+            if (currentCart.getDiscount() != null && currentCart.getDiscount() > 0) {
+                servicePrice = servicePrice - (servicePrice * currentCart.getDiscount() / 100);
+            }
+
+            // Создаем копию сервиса с новой ценой
+            Service discountedService = new Service();
+            discountedService.setId(service.getId());
+            discountedService.setName(service.getName());
+            discountedService.setPrice(servicePrice);
+            discountedService.setDurationMinutes(service.getDurationMinutes());
+            discountedService.setDescription(service.getDescription());
+            discountedService.setImageUrl(service.getImageUrl());
+
             cartViewModel.addServiceToCart(
-                    service,
+                    discountedService,
                     currentCart.getSelectedCarId(),
                     currentCart.getSelectedCarName()
             );
+
             isServiceInCart = true;
             updateUI();
 
@@ -241,7 +289,6 @@ public class ServiceDetailsBottomSheet extends BottomSheetDialogFragment {
     private void updateUI() {
         addServiceButton.setVisibility(isServiceInCart ? View.GONE : View.VISIBLE);
         summaryContainer.setVisibility(isServiceInCart ? View.VISIBLE : View.GONE);
-
         if (isServiceInCart) {
             updateSummaryInfo();
         }

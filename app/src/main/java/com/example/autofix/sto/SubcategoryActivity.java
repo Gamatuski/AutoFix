@@ -3,6 +3,7 @@ package com.example.autofix.sto;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.autofix.MainActivity;
 import com.example.autofix.R;
 import com.example.autofix.adapters.ServiceItemAdapter;
+import com.example.autofix.data.entities.Cart;
 import com.example.autofix.models.ServiceCategory;
 import com.example.autofix.models.ServiceSubcategory;
 import com.example.autofix.viewmodels.CartViewModel;
@@ -44,7 +46,7 @@ public class SubcategoryActivity extends AppCompatActivity implements ServiceIte
     private String categoryName;
 
     private CardView summaryContainer;
-    private TextView totalPriceText;
+    private TextView totalPriceText, totalOldPriceText;
     private CartViewModel cartViewModel;
     private Button proceedToBookingButton;
     private  ImageView cancelButton, backButton;
@@ -81,6 +83,7 @@ public class SubcategoryActivity extends AppCompatActivity implements ServiceIte
         // Инициализация summary
         summaryContainer = findViewById(R.id.summary_card);
         totalPriceText = findViewById(R.id.total_price_text);
+        totalOldPriceText = findViewById(R.id.total_old_price_text);
 
         // Наблюдаем за изменениями в корзине
         setupCartObservers();
@@ -109,10 +112,40 @@ public class SubcategoryActivity extends AppCompatActivity implements ServiceIte
         });
 
         cartViewModel.getTotalPrice().observe(this, totalPrice -> {
+            updateTotalPriceDisplay(totalPrice);
+        });
+
+        // Добавляем наблюдение за изменениями корзины
+        cartViewModel.getCart().observe(this, cart -> {
+            // Обновляем отображение цены при изменении скидки
+            Integer totalPrice = cartViewModel.getTotalPrice().getValue();
             if (totalPrice != null) {
-                totalPriceText.setText(String.format("%d ₽", totalPrice));
+                updateTotalPriceDisplay(totalPrice);
             }
         });
+    }
+
+    private void updateTotalPriceDisplay(Integer totalPrice) {
+        if (totalPrice == null) return;
+
+        Cart cart = cartViewModel.getCart().getValue();
+        if (cart != null && cart.getDiscount() != null && cart.getDiscount() > 0) {
+            // Рассчитываем оригинальную цену без скидки
+            int discount = cart.getDiscount();
+            int originalPrice = totalPrice * 100 / (100 - discount);
+
+            // Показываем старую цену зачеркнутой
+            totalOldPriceText.setText(String.format("%d ₽", originalPrice));
+            totalOldPriceText.setVisibility(View.VISIBLE);
+            totalOldPriceText.setPaintFlags(totalOldPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            // Показываем новую цену со скидкой
+            totalPriceText.setText(String.format("%d ₽", totalPrice));
+        } else {
+            // Скрываем старую цену и показываем только обычную
+            totalOldPriceText.setVisibility(View.GONE);
+            totalPriceText.setText(String.format("%d ₽", totalPrice));
+        }
     }
 
     private void openCartServiceActivity() {
@@ -128,6 +161,16 @@ public class SubcategoryActivity extends AppCompatActivity implements ServiceIte
     }
 
     private void loadSubcategories() {
+        // Проверяем, что адаптер инициализирован
+        if (serviceAdapter == null) {
+            serviceAdapter = new ServiceItemAdapter(
+                    new ArrayList<>(),
+                    ServiceItemAdapter.ItemType.SUBCATEGORY,
+                    this);
+            subcategoriesRecyclerView.setAdapter(serviceAdapter);
+        }
+
+        serviceAdapter.showLoading();
 
         db.collection("service_categories")
                 .document(categoryId)
@@ -141,18 +184,12 @@ public class SubcategoryActivity extends AppCompatActivity implements ServiceIte
                             subcategory.setId(document.getId());
                             subcategories.add(subcategory);
                         }
-
-                        // Настройка адаптера для подкатегорий
-                        serviceAdapter = new ServiceItemAdapter(
-                                subcategories,
-                                ServiceItemAdapter.ItemType.SUBCATEGORY,
-                                this);
-                        subcategoriesRecyclerView.setAdapter(serviceAdapter);
-
+                        // Обновляем данные в адаптере
+                        serviceAdapter.updateItems(subcategories);
                     } else {
                         Toast.makeText(this, "Ошибка загрузки подкатегорий", Toast.LENGTH_SHORT).show();
+                        serviceAdapter.hideLoading();
                     }
-
                 });
     }
 

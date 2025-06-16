@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.autofix.data.entities.Cart;
 import com.example.autofix.data.entities.CartItem;
@@ -22,6 +23,8 @@ public class CartViewModel extends AndroidViewModel {
     private LiveData<Integer> cartItemCount;
     private LiveData<Integer> totalPrice;
     private LiveData<Integer> totalDuration;
+    private int currentUserDiscount = 0;
+    private boolean discountObserverActive = false;
 
     // Для отслеживания статуса бронирования
     private MutableLiveData<Boolean> bookingInProgress = new MutableLiveData<>(false);
@@ -137,6 +140,52 @@ public class CartViewModel extends AndroidViewModel {
     // Метод для создания заказа в Firestore
     public void createOrder(String userId, OnOrderCreatedListener listener) {
         repository.createOrder(userId, listener);
+    }
+    public void applyDiscount(int discountPercent) {
+        this.currentUserDiscount = discountPercent; // Сохраняем текущую скидку
+        repository.applyDiscount(discountPercent);
+        Log.d("CartViewModel", "User discount saved: " + discountPercent + "%");
+    }
+    // Добавьте метод для настройки observer'а для новых корзин
+    public void setupDiscountObserver() {
+        if (discountObserverActive) {
+            return; // Избегаем множественных observer'ов
+        }
+
+        discountObserverActive = true;
+
+        // Наблюдаем за изменениями корзины
+        cart.observeForever(new Observer<Cart>() {
+            @Override
+            public void onChanged(Cart currentCart) {
+                if (currentCart != null &&
+                        (currentCart.getDiscount() == null || currentCart.getDiscount() == 0) &&
+                        currentUserDiscount > 0) {
+
+                    Log.d("CartViewModel", "New cart detected, applying saved discount: " + currentUserDiscount + "%");
+
+                    // Применяем сохраненную скидку
+                    currentCart.setDiscount(currentUserDiscount);
+                    updateCart(currentCart);
+
+                    // Удаляем observer после применения скидки
+                    cart.removeObserver(this);
+                    discountObserverActive = false;
+
+                    Log.d("CartViewModel", "Discount applied to new cart: " + currentUserDiscount + "%");
+                }
+            }
+        });
+    }
+
+    // Метод для получения текущей скидки
+    public int getCurrentUserDiscount() {
+        return currentUserDiscount;
+    }
+
+    // Метод для очистки observer'а
+    public void clearDiscountObserver() {
+        discountObserverActive = false;
     }
 
     public void deleteCart() {

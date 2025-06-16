@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.room.common.jvm)
     implementation(libs.room.runtime.android)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -55,5 +56,8 @@ dependencies {
     implementation (libs.material.v161)
 
     implementation (libs.play.services.location)
+    implementation(libs.volley)
+    implementation(libs.shimmer)
+    implementation (libs.core)
 
 }

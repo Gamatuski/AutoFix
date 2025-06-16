@@ -5,6 +5,9 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +35,7 @@ import com.example.autofix.adapters.StationAdapter;
 import com.example.autofix.adapters.StationsListAdapter;
 import com.example.autofix.bottomsheets.BottomSheetStationFragment;
 import com.example.autofix.bottomsheets.BottomSheetStationsList;
+import com.example.autofix.data.entities.Cart;
 import com.example.autofix.data.entities.Station;
 import com.example.autofix.sto.BookServiceActivity;
 import com.example.autofix.utils.LocationTracker;
@@ -39,7 +45,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,6 +80,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CartViewModel cartViewModel;
 
     private FloatingActionButton fabList, fabZoomIn, fabZoomOut,fabMyLocation;
+    private Marker userLocationMarker;
+    private boolean isFirstLocationUpdate = true;
 
 
     @Nullable
@@ -177,8 +188,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onBookButtonClick(Station station) {
-                // Обработка клика на кнопку бронирования
-                // Можно добавить другую логику или также открыть BottomSheet
+
                 openBookServiceActivity(station);
             }
         };
@@ -317,10 +327,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void addMarkersToMap(List<Station> stations) {
         if (mMap == null) return;
+
+        // Очищаем только маркеры станций, сохраняя маркер местоположения пользователя
         mMap.clear();
 
+        // Восстанавливаем маркер местоположения пользователя если он был
+        if (userLocationMarker != null) {
+            LatLng userPosition = userLocationMarker.getPosition();
+            userLocationMarker = mMap.addMarker(new MarkerOptions()
+                    .position(userPosition)
+                    .title("Ваше местоположение")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        }
+
         for (Station station : stations) {
-            // Проверяем, что координаты не null
             if (station.hasCoordinates()) {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(
@@ -348,10 +368,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        // Сначала устанавливаем карту на Хабаровск
+        LatLng khabarovsk = new LatLng(48.4827, 135.0838);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(khabarovsk, 12f));
+
         // Проверяем местоположение при готовности карты
-        trackUserLocation();
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        trackUserLocation();
 
 
     }
@@ -368,14 +394,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         locationTracker.startLocationUpdates(new LocationTracker.LocationListener() {
             @Override
             public void onLocationReceived(Location location) {
-                // Центрируем карту на местоположении пользователя
-                LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f));
+                if (mMap == null) return;
 
-                // Можно добавить маркер местоположения
-                mMap.addMarker(new MarkerOptions()
+                LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                // Удаляем предыдущий маркер местоположения пользователя
+                if (userLocationMarker != null) {
+                    userLocationMarker.remove();
+                }
+
+                // Создаем новый маркер местоположения пользователя со стрелочкой
+                userLocationMarker = mMap.addMarker(new MarkerOptions()
                         .position(userLatLng)
-                        .title("Ваше местоположение"));
+                        .title("Ваше местоположение")
+                        .icon(getBitmapDescriptorFromVector(R.drawable.ic_navigation))
+                        .anchor(0.5f, 0.5f)
+                        .rotation(location.getBearing()));
+
+                // Центрируем камеру только при первом обновлении местоположения
+                if (isFirstLocationUpdate) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f));
+                    isFirstLocationUpdate = false;
+                }
             }
 
             @Override
@@ -413,6 +453,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 cart.setStationId(station.getId());
                 cart.setStationAddress(station.getAddress());
                 cartViewModel.updateCart(cart);
+            }else {
+                cart = new Cart();
+                cart.setStationId(station.getId());
+                cart.setStationAddress(station.getAddress());
+                cartViewModel.insertCart(cart);
             }
         });
 
@@ -429,25 +474,39 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             if (mMap != null) {
-                mMap.setMyLocationEnabled(true);
-                mMap.setOnMyLocationButtonClickListener(() -> {
-                    centerMapOnUserLocation();
-                    return true;
-                });
-                mMap.setOnMyLocationClickListener(location -> {
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
-                });
-            }else {
-                // Запросить разрешения
-                ActivityCompat.requestPermissions(requireActivity(),
-                        new String[]{
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                        },
-                        LOCATION_PERMISSION_REQUEST_CODE);
+                // Если у нас есть маркер местоположения пользователя, центрируем камеру на него
+                if (userLocationMarker != null) {
+                    LatLng userPosition = userLocationMarker.getPosition();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userPosition, 15f));
+                } else {
+                    Toast.makeText(getContext(),
+                            "Местоположение еще не определено",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
+        } else {
+            // Запросить разрешения
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    LOCATION_PERMISSION_REQUEST_CODE);
         }
+    }
+
+    private BitmapDescriptor getBitmapDescriptorFromVector(@DrawableRes int vectorDrawableResourceId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(requireContext(), vectorDrawableResourceId);
+
+        // Устанавливаем размер иконки (например, 32x32 dp)
+        int width = (int) (32 * getResources().getDisplayMetrics().density);
+        int height = (int) (32 * getResources().getDisplayMetrics().density);
+
+        vectorDrawable.setBounds(0, 0, width, height);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     @Override
