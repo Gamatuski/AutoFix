@@ -61,7 +61,6 @@
       * Google Maps API: для работы с картами.
       * Carbase API: для получения данных об автомобилях.
   * **Навигация:** Android Jetpack Navigation Component с BottomNavigationView.
-  * **Асинхронность:** Handler для задержек (например, в `SplashActivity`).
   * **UI:** RecyclerView для отображения списков, CardView для элементов интерфейса.
 
 -----
